@@ -4,6 +4,7 @@ import com.api.countryinfo.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -83,5 +84,32 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(error);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationErrors(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request) {
+
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .findFirst()
+                .map(error -> error.getDefaultMessage())
+                .orElse("Invalid request.");
+
+        ErrorResponse error = new ErrorResponse(
+                Instant.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation error",
+                message,
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+    }
+
+
 
 }

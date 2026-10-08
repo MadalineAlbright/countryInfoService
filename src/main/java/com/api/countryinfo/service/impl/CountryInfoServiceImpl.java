@@ -1,7 +1,9 @@
 package com.api.countryinfo.service.impl;
 
+import com.api.countryinfo.common.CountryMapper;
 import com.api.countryinfo.dto.CountryJsonRequest;
 import com.api.countryinfo.dto.CountryResponseDto;
+import com.api.countryinfo.dto.CountryUpdateRequest;
 import com.api.countryinfo.dto.LanguageResponseDto;
 import com.api.countryinfo.entity.CountryEntity;
 import com.api.countryinfo.entity.LanguageEntity;
@@ -29,10 +31,12 @@ import java.util.List;
 public class CountryInfoServiceImpl implements CountryInfoService {
     private final CountryInfoClient countryInfoClient;
     private final CountryRepository countryRepository;
+    private final CountryMapper countryMapper;
     String isoCode = null;
-    public CountryInfoServiceImpl(CountryInfoClient countryInfoClient,CountryRepository countryRepository) {
+    public CountryInfoServiceImpl(CountryInfoClient countryInfoClient, CountryRepository countryRepository, CountryMapper countryMapper) {
         this.countryInfoClient = countryInfoClient;
         this.countryRepository = countryRepository;
+        this.countryMapper = countryMapper;
     }
 
     @Override
@@ -128,5 +132,67 @@ public class CountryInfoServiceImpl implements CountryInfoService {
 
         } catch (SoapFaultClientException e) { log.error( "SOAP fault while retrieving country information for {}", request.getName(), e ); throw new ExternalServiceException( "The country information service returned a SOAP fault.", e );
         } catch (WebServiceException e) { log.error( "Error communicating with country information service for {}", request.getName(), e ); throw new ExternalServiceException( "Unable to retrieve country information from the external service.", e ); }
+    }
+
+    @Transactional
+    @Override
+    public List<CountryResponseDto> getAllCountries() {
+
+        return countryMapper.toResponseList(
+                countryRepository.findAll()
+        );
+    }
+
+    @Transactional
+    @Override
+    public CountryResponseDto getCountryById(Long id) {
+
+        CountryEntity country = countryRepository.findById(id)
+                .orElseThrow(() ->
+                        new CountryNotFoundException(
+                                "Country with ID " + id + " not found"
+                        )
+                );
+
+        return countryMapper.toResponse(country);
+    }
+
+    @Transactional
+    @Override
+    public CountryResponseDto updateCountry(
+            Long id,
+            CountryUpdateRequest request) {
+
+        CountryEntity country = countryRepository.findById(id)
+                .orElseThrow(() ->
+                        new CountryNotFoundException(
+                                "Country with ID " + id + " not found"
+                        )
+                );
+
+        country.setName(request.getCountryName());
+        country.setCapitalCity(request.getCapitalCity());
+        country.setPhoneCode(request.getPhoneCode());
+        country.setContinentCode(request.getContinent());
+        country.setCurrencyIsoCode(request.getCurrency());
+        country.setCountryFlag(request.getCountryFlag());
+
+        CountryEntity updated = countryRepository.save(country);
+
+        return countryMapper.toResponse(updated);
+    }
+
+    @Transactional
+    @Override
+    public void deleteCountry(Long id) {
+
+        CountryEntity country = countryRepository.findById(id)
+                .orElseThrow(() ->
+                        new CountryNotFoundException(
+                                "Country with ID " + id + " not found"
+                        )
+                );
+
+        countryRepository.delete(country);
     }
 }

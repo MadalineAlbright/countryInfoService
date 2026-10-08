@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: country-info
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: country-info
+  template:
+    metadata:
+      labels:
+        app: country-info
+    spec:
+      containers:
+        - name: country-info
+          image: country-info:v1.1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+
+          startupProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 5
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+          env:
+            - name: DB_HOST
+              value: mysql
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: root
+            - name: DB_NAME
+              value: mydb
+            - name: DB_PASSWORD
+              value: secret
+
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
