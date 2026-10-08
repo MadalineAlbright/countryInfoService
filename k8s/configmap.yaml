@@ -5,4 +5,4 @@ metadata:
 data:
   DB_HOST: mysql
   DB_PORT: "3306"
-  DB_NAME: mydb
+  DB_NAME: country-info-db

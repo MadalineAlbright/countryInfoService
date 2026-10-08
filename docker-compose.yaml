@@ -7,7 +7,7 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: <your-database-passsword>
-      MYSQL_DATABASE: mydb
+      MYSQL_DATABASE: country-info-db
       MYSQL_USER: <your-database-username>
       MYSQL_PASSWORD: <your-database-password>
     volumes:
@@ -19,7 +19,7 @@ services:
 
   # Spring Boot Application Service
   springboot-app:
-    image: springboot-app:latest
+    image: springboot-app:latest‚
     container_name: springboot-app
     build: .
     ports:
@@ -28,7 +28,7 @@ services:
       # Use the service name 'mysqldb' as the host variable
       DB_HOST: mysqldb
       DB_PORT: 3306
-      DB_NAME: mydb
+      DB_NAME: country-info-db
       DB_USER: <your-database-username>
       DB_PASSWORD: <your-database-password>
     depends_on:
