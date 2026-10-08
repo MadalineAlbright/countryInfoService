@@ -1,18 +1,17 @@
 package com.api.countryinfo.service.impl;
 
 import com.api.countryinfo.dto.CountryJsonRequest;
-import com.api.countryinfo.dto.CountryJsonResponse;
 import com.api.countryinfo.dto.CountryResponseDto;
 import com.api.countryinfo.dto.CountryUpdateRequest;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 
 public interface CountryInfoService {
     CountryResponseDto getCountryInfo(CountryJsonRequest request);
-
     @Transactional
-    List<CountryResponseDto> getAllCountries();
+    Page<CountryResponseDto> getAllCountries(Pageable pageable);
 
     @Transactional
     CountryResponseDto getCountryById(Long id);

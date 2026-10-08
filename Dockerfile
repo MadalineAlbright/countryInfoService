@@ -1,6 +1,6 @@
 FROM eclipse-temurin:21-jre
 
-LABEL maintainer = "maddie@gmail.com"
+LABEL maintainer = "maddie"
 
 WORKDIR /opt
 

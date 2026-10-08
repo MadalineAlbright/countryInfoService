@@ -5,6 +5,9 @@ import com.api.countryinfo.dto.CountryResponseDto;
 import com.api.countryinfo.dto.CountryUpdateRequest;
 import com.api.countryinfo.service.impl.CountryInfoService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +29,10 @@ public class CountryInfoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CountryResponseDto>> getAllCountries() {
-        return ResponseEntity.ok(countryInfoService.getAllCountries());
+    public ResponseEntity<Page<CountryResponseDto>> getAllCountries(
+            @PageableDefault(size = 20, sort = "id")
+            Pageable pageable) {
+        return ResponseEntity.ok(countryInfoService.getAllCountries(pageable));
     }
 
     @GetMapping("/{id}")
@@ -57,7 +62,4 @@ public class CountryInfoController {
 
         return ResponseEntity.noContent().build();
     }
-
-
-
 }

@@ -1,4 +1,4 @@
-package com.api.countryinfo.entity;
+package com.api.countryinfo.model;
 
 import jakarta.persistence.*;
 

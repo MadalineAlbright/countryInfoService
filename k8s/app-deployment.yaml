@@ -18,14 +18,12 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
-
           startupProbe:
             httpGet:
               path: /actuator/health/liveness
               port: 8080
             failureThreshold: 30
             periodSeconds: 5
-
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
@@ -33,7 +31,6 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 2
             failureThreshold: 3
-
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
@@ -43,20 +40,31 @@ spec:
             failureThreshold: 3
           env:
             - name: DB_HOST
-              value: mysql
-            - name: DB_PORT
-              value: "3306"
-            - name: DB_USER
-              value: root
-            - name: DB_NAME
-              value: mydb
-            - name: DB_PASSWORD
-              value: secret
+              valueFrom:
+                configMapKeyRef:
+                  name: country-info-config
+                  key: DB_HOST
 
-          resources:
-            requests:
-              cpu: "250m"
-              memory: "512Mi"
-            limits:
-              cpu: "1000m"
-              memory: "1Gi"
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: country-info-config
+                  key: DB_PORT
+
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: country-info-config
+                  key: DB_NAME
+
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: country-info-secret
+                  key: DB_USERNAME
+
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: country-info-secret
+                  key: DB_PASSWORD

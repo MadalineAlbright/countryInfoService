@@ -5,8 +5,8 @@ import com.api.countryinfo.dto.CountryJsonRequest;
 import com.api.countryinfo.dto.CountryResponseDto;
 import com.api.countryinfo.dto.CountryUpdateRequest;
 import com.api.countryinfo.dto.LanguageResponseDto;
-import com.api.countryinfo.entity.CountryEntity;
-import com.api.countryinfo.entity.LanguageEntity;
+import com.api.countryinfo.model.CountryEntity;
+import com.api.countryinfo.model.LanguageEntity;
 import com.api.countryinfo.exception.CountryAlreadyExistsException;
 import com.api.countryinfo.exception.CountryNotFoundException;
 import com.api.countryinfo.exception.ExternalServiceException;
@@ -19,6 +19,8 @@ import com.api.countryinfo.webclient.CountryInfoClient;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.WebServiceException;
 import org.springframework.ws.soap.client.SoapFaultClientException;
@@ -136,11 +138,9 @@ public class CountryInfoServiceImpl implements CountryInfoService {
 
     @Transactional
     @Override
-    public List<CountryResponseDto> getAllCountries() {
-
-        return countryMapper.toResponseList(
-                countryRepository.findAll()
-        );
+    public Page<CountryResponseDto> getAllCountries(Pageable pageable) {
+        return countryRepository.findAll(pageable)
+                .map(countryMapper::toResponse);
     }
 
     @Transactional

@@ -1,6 +1,6 @@
 package com.api.countryinfo.repository;
 
-import com.api.countryinfo.entity.CountryEntity;
+import com.api.countryinfo.model.CountryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

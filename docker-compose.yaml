@@ -6,10 +6,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: <your-database-passsword>
       MYSQL_DATABASE: mydb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_USER: <your-database-username>
+      MYSQL_PASSWORD: <your-database-password>
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -29,8 +29,8 @@ services:
       DB_HOST: mysqldb
       DB_PORT: 3306
       DB_NAME: mydb
-      DB_USER: root
-      DB_PASSWORD: secret
+      DB_USER: <your-database-username>
+      DB_PASSWORD: <your-database-password>
     depends_on:
       mysqldb:
         condition: service_healthy

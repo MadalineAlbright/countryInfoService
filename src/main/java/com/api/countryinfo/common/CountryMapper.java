@@ -2,7 +2,7 @@ package com.api.countryinfo.common;
 
 import com.api.countryinfo.dto.CountryResponseDto;
 import com.api.countryinfo.dto.LanguageResponseDto;
-import com.api.countryinfo.entity.CountryEntity;
+import com.api.countryinfo.model.CountryEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
